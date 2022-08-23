@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using NZWalks.API.Models.DTO;
 using NZWalks.API.Repositories;
 
 namespace NZWalks.API.Controllers
@@ -28,7 +29,55 @@ namespace NZWalks.API.Controllers
             return Ok(walksDTO);
         }
 
-        
+        [HttpGet("{id:guid}")]
+        public async Task<IActionResult> GetWalk(Guid id)
+        {
+            var walk = await walkRepository.GetWalk(id);
+            if (walk == null)
+                return NotFound();
+            var walkDTO = mapper.Map<Models.DTO.Walk>(walk);
+            return Ok(walkDTO);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Add([FromBody] Models.DTO.AddWalkRequest addWalk)
+        {
+            var walk = mapper.Map<Models.Domain.Walk>(addWalk);
+
+            walk = await walkRepository.AddWalk(walk);
+            if (walk == null)
+                return NotFound();
+
+            var regionDTO = mapper.Map<Models.DTO.Region>(walk);
+            return Ok(regionDTO);
+        }
+
+        [HttpPut]
+        [Route("{id:guid}")]
+        public async Task<IActionResult> UpdateWalk([FromRoute] Guid id, [FromBody] UpdateWalkRequest UpdatedWalk)
+        {
+            var walk = mapper.Map<Models.Domain.Walk>(UpdatedWalk);
+            walk = await walkRepository.UpdateWalk(id, walk);
+            if (walk == null)
+                return NotFound();
+
+            var walkDTO = mapper.Map<Models.DTO.Walk>(walk);
+            return Ok(walkDTO);
+        }
+
+        [HttpDelete("{id:guid}")]
+        public async Task<IActionResult> DeleteWalk(Guid id)
+        {
+            var walk = await walkRepository.DeleteWalk(id);
+            if (walk == null)
+                return NotFound();
+
+            var walkDTO = mapper.Map<Models.DTO.Walk>(walk);
+            return Ok(walkDTO);
+        }
+
+
+
 
     }
 }
