@@ -43,6 +43,9 @@ namespace NZWalks.API.Controllers
         [HttpPost]
         public async Task<IActionResult> AddWalkDifficulty(Models.DTO.AddWalkDifficultyRequest addWD)
         {
+            if (!ValidateAddWalkDifficulty(addWD))
+                return BadRequest(ModelState);
+
             var wd = mapper.Map<Models.Domain.WalkDifficulty>(addWD);
             //var region = new Models.Domain.Region()
             //{
@@ -77,6 +80,9 @@ namespace NZWalks.API.Controllers
         [Route("{id:guid}")]
         public async Task<IActionResult> UpdateWalkDifficulty([FromRoute] Guid id, [FromBody] UpdateWalkDifficultyRequest UpdatedWD)
         {
+            if (!ValidateUpdateWalkDifficulty(id, UpdatedWD))
+                return BadRequest(ModelState);
+
             var wd = mapper.Map<Models.Domain.WalkDifficulty>(UpdatedWD);
             wd = await walkDifficultyRepository.UpdateWalkDifficulty(id, wd);
             if (wd == null)
@@ -86,7 +92,44 @@ namespace NZWalks.API.Controllers
             return Ok(wdDTO);
         }
 
+        #region Private method
 
+        private Boolean ValidateAddWalkDifficulty(Models.DTO.AddWalkDifficultyRequest addWD)
+        {
+            if (addWD == null)
+            {
+                ModelState.AddModelError(nameof(addWD), $"Add Walk Difficulty is required");
+                return false;
+            }
+            if (string.IsNullOrWhiteSpace(addWD.Code))
+            {
+                ModelState.AddModelError(nameof(addWD.Code), $"{nameof(addWD.Code)} cannot be null or white space");
+            }
+            if (ModelState.ErrorCount > 0)
+            {
+                return false;
+            }
+            return true;
+        }
 
+        private Boolean ValidateUpdateWalkDifficulty(Guid id, UpdateWalkDifficultyRequest UpdatedWD)
+        {
+            if (UpdatedWD == null)
+            {
+                ModelState.AddModelError(nameof(UpdatedWD), $"Updated Walk Difficulty is required");
+                return false;
+            }
+            if (string.IsNullOrWhiteSpace(UpdatedWD.Code))
+            {
+                ModelState.AddModelError(nameof(UpdatedWD.Code), $"{nameof(UpdatedWD.Code)} cannot be null or white space");
+            }
+            if (ModelState.ErrorCount > 0)
+            {
+                return false;
+            }
+            return true;
+        }
+
+        #endregion
     }
 }
