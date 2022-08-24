@@ -43,8 +43,8 @@ namespace NZWalks.API.Controllers
         [HttpPost]
         public async Task<IActionResult> AddWalkDifficulty(Models.DTO.AddWalkDifficultyRequest addWD)
         {
-            if (!ValidateAddWalkDifficulty(addWD))
-                return BadRequest(ModelState);
+            //if (!ValidateAddWalkDifficulty(addWD))
+            //    return BadRequest(ModelState);
 
             var wd = mapper.Map<Models.Domain.WalkDifficulty>(addWD);
             //var region = new Models.Domain.Region()
@@ -80,8 +80,8 @@ namespace NZWalks.API.Controllers
         [Route("{id:guid}")]
         public async Task<IActionResult> UpdateWalkDifficulty([FromRoute] Guid id, [FromBody] UpdateWalkDifficultyRequest UpdatedWD)
         {
-            if (!ValidateUpdateWalkDifficulty(id, UpdatedWD))
-                return BadRequest(ModelState);
+            //if (!ValidateUpdateWalkDifficulty(id, UpdatedWD))
+            //    return BadRequest(ModelState);
 
             var wd = mapper.Map<Models.Domain.WalkDifficulty>(UpdatedWD);
             wd = await walkDifficultyRepository.UpdateWalkDifficulty(id, wd);
