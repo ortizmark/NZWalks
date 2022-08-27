@@ -17,9 +17,13 @@ namespace NZWalks.API.Repositories
                 username="readwrite", Password="readwritePW", Roles=new List<string> { "reader", "writer" }
             }        
         };
-        public Task<bool> AuthenticateUser(string username, string password)
+        public async Task<User> AuthenticateUser(string username, string password)
         {
-            throw new NotImplementedException();
+            //var user = Users.Find(x => x.username == username && x.Password == password);
+            var user = Users.Find(x => x.username.Equals(username, StringComparison.InvariantCultureIgnoreCase) 
+                && x.Password == password);
+
+            return user;
         }
     }
 }
